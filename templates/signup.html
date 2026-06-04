@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up | Authentic Eyes{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2 class="neon-yellow-text">REGISTRATION PROTOCOL</h2>
+    <p class="subtitle">Join Authentic Eyes to secure your identity and media.</p>
+    
+    <form method="POST" action="{{ url_for('signup') }}" class="auth-form" enctype="multipart/form-data">
+        
+        <div class="form-group">
+            <label for="full_name" class="neon-cyan-text">Full Name</label>
+            <input type="text" 
+                   id="full_name" 
+                   name="full_name" 
+                   required 
+                   placeholder="Your full operational designation"
+                   class="tech-input">
+        </div>
+
+        <div class="form-group">
+            <label for="username" class="neon-cyan-text">System Username</label>
+            <input type="text" 
+                   id="username" 
+                   name="username" 
+                   required 
+                   placeholder="A unique alphanumeric identifier"
+                   class="tech-input">
+        </div>
+
+        <div class="form-group">
+            <label for="email" class="neon-cyan-text">Contact Email</label>
+            <input type="email" 
+                   id="email" 
+                   name="email" 
+                   required 
+                   placeholder="Your secure channel address"
+                   class="tech-input">
+        </div>
+        
+        <div class="form-group">
+            <label for="city" class="neon-cyan-text">City/Location</label>
+            <input type="text" 
+                   id="city" 
+                   name="city" 
+                   required 
+                   placeholder="Geospatial origin"
+                   class="tech-input">
+        </div>
+        
+        <div class="form-group">
+            <label for="password" class="neon-cyan-text">Password</label>
+            <input type="password" 
+                   id="password" 
+                   name="password" 
+                   required 
+                   placeholder="Establish secure access key"
+                   class="tech-input">
+        </div>
+        <div class="form-group">
+            <label for="confirm_password" class="neon-cyan-text">Confirm Password</label>
+            <input type="password" 
+                   id="confirm_password" 
+                   name="confirm_password" 
+                   required 
+                   placeholder="Repeat access key"
+                   class="tech-input">
+        </div>
+
+        <div class="form-group">
+            <label for="profile_pic" class="neon-pink-text file-upload-label">Upload Profile Avatar (Optional)</label>
+            <input type="file" 
+                   id="profile_pic" 
+                   name="profile_pic" 
+                   accept="image/*"
+                   class="tech-file-input">
+            <p class="file-info neon-yellow-text">Max size 2MB. Accepted: JPG, PNG.</p>
+        </div>
+
+        <button type="submit" class="btn submit-btn neon-pink">FINALIZE REGISTRATION</button>
+    </form>
+    
+    <div class="auth-footer">
+        <p class="neon-cyan-text">Already registered? <a href="{{ url_for('login') }}" class="neon-blue-link">Log In</a></p>
+    </div>
+</div>
+{% endblock %}

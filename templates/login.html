@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Authentic Eyes{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2 class="neon-pink-text">SECURE LOGIN</h2>
+    <p class="subtitle">Access the Deepfake Detection Terminal</p>
+    
+    <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+        
+        <div class="form-group">
+            <label for="username" class="neon-cyan-text">Username or Email</label>
+            <input type="text" 
+                   id="username" 
+                   name="username" 
+                   required 
+                   placeholder="Enter your registered username or email"
+                   class="tech-input">
+        </div>
+
+        <div class="form-group">
+            <label for="password" class="neon-cyan-text">Password</label>
+            <input type="password" 
+                   id="password" 
+                   name="password" 
+                   required 
+                   placeholder="Enter your encrypted password"
+                   class="tech-input">
+        </div>
+
+        <div class="form-group-inline">
+            <input type="checkbox" id="remember" name="remember" class="tech-checkbox">
+            <label for="remember" class="neon-yellow-text">Keep me logged in</label>
+        </div>
+
+        <button type="submit" class="btn submit-btn neon-blue">LOG IN</button>
+    </form>
+    
+    <div class="auth-footer">
+        <p class="neon-cyan-text">New User? <a href="{{ url_for('signup') }}" class="neon-pink-link">Create Account</a></p>
+        <p class="neon-cyan-text">Forgot Password? <a href="#" class="neon-yellow-link">Request Reset Protocol</a></p>
+    </div>
+</div>
+{% endblock %}

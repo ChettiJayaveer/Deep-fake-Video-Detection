@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome | Authentic Eyes{% endblock %}
+
+{% block content %}
+<section class="hero-section container"> 
+    {# --- LEFT COLUMN: FULL-SIZE LOGO --- #}
+    <div class="hero-left">
+        <img src="{{ url_for('static', filename='images/site_logo.png') }}" 
+             alt="Authentic Eyes Logo" 
+             class="hero-full-logo">
+    </div>
+
+    {# --- RIGHT COLUMN: TEXT AND BUTTONS --- #}
+    <div class="hero-right">
+        <h1 class="neon-pink-text">WELCOME TO AUTHENTIC EYES</h1>
+        <p class="subtitle">The leading security platform for verifiable video integrity.</p>
+        <a href="{{ url_for('detect') }}" class="btn action-btn neon-blue">START DETECTION NOW</a>
+    </div>
+</section>
+
+<hr class="divider neon-cyan-glow">
+
+<section class="about-section container">
+    <div class="about-content">
+        <h2 class="neon-yellow-text">OUR MISSION: DEEPFAKE DETECTION</h2>
+        <p class="body-text">
+            In an era dominated by synthesized media, the challenge of verifying digital truth is paramount. 
+            Authentic Eyes is built on cutting-edge **R3D-18 Deep Learning technology**—the same advanced model trained 
+            on extensive datasets, as seen in our internal research. Our mission is to provide fast, reliable, 
+            and transparent analysis to distinguish between authentic and manipulated video content.
+        </p>
+        <p class="body-text">
+            We use a four-channel input (RGB + Face Mask) to maximize the detection of subtle artifacts often left by 
+            deepfake generators, providing you with a definitive confidence score.
+        </p>
+        <ul class="key-features">
+            <li><span class="neon-cyan-text">✓</span> R3D-18 Video Analysis</li>
+            <li><span class="neon-cyan-text">✓</span> Secure User Authentication</li>
+            <li><span class="neon-cyan-text">✓</span> Real-Time Artifact Mapping</li>
+        </ul>
+        <a href="{{ url_for('signup') }}" class="btn secondary-btn neon-pink">Join the Fight for Truth</a>
+    </div>
+    
+    <div class="about-image-container">
+        <img src="{{ url_for('static', filename='images/about_hero.jpg') }}" 
+             alt="Deepfake Detection Analysis" 
+             class="about-hero-img">
+    </div>
+</section>
+{% endblock %}

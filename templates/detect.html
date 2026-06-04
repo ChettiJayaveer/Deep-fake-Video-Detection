@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Detector Terminal{% endblock %}
+
+{% block content %}
+<div class="detection-terminal container">
+    <h2 class="neon-blue-text">VIDEO INTEGRITY CHECK</h2>
+    <p class="subtitle">Upload a video file (.mp4 or .avi) for deepfake analysis.</p>
+
+    <div class="auth-container">
+        <form id="predictionForm" enctype="multipart/form-data" class="auth-form">
+            <div class="form-group large-upload-area">
+                <input type="file" name="video_file" id="video_file" class="tech-file-input" accept="video/mp4, video/avi" required>
+                <label for="video_file" class="file-upload-label neon-pink">
+                    <span id="file_name_display">SELECT VIDEO FILE</span>
+                </label>
+            </div>
+            
+            <button type="submit" class="btn action-btn neon-blue" id="submit_btn">
+                <span id="submit_text">START ANALYSIS</span>
+            </button>
+        </form>
+    </div>
+
+    <div id="loading_state" class="loading-state" style="display: none;">
+        <div class="spinner"></div>
+        <p class="neon-yellow-text">Processing Video... This may take a moment.</p>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress_bar"></div>
+        </div>
+    </div>
+    
+    <div id="results_panel" class="results-panel" style="display: none;">
+        <h3 class="results-title">ANALYSIS COMPLETE</h3>
+        <div class="result-data">
+            <span class="data-label">File:</span>
+            <span id="result_filename"></span>
+        </div>
+        <div class="result-data">
+            <span class="data-label">Prediction:</span>
+            <span id="result_prediction" class="prediction-text"></span>
+        </div>
+        <div class="result-data">
+            <span class="data-label">Confidence:</span>
+            <span id="result_confidence"></span>
+        </div>
+        <div class="result-data">
+            <span class="data-label">Confidence Bar:</span>
+            <div class="confidence-bar-outer">
+                <div class="confidence-bar-inner" id="confidence_bar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="custom_flash_messages" style="margin-top: 20px;"></div>
+</div>
+
+<script>
+    // Helper function to show custom flash messages (Mimics Flask's flash)
+    function showFlash(message, category) {
+        const flashDiv = document.getElementById('custom_flash_messages');
+        const alert = document.createElement('div');
+        alert.className = `alert ${category}-text`; // Use your neon classes
+        alert.textContent = message;
+        flashDiv.innerHTML = ''; // Clear previous messages
+        flashDiv.appendChild(alert);
+        // Automatically hide after 5 seconds
+        setTimeout(() => alert.remove(), 5000); 
+    }
+
+    document.getElementById('video_file').addEventListener('change', function() {
+        const fileName = this.files.length > 0 ? this.files[0].name : 'SELECT VIDEO FILE';
+        document.getElementById('file_name_display').textContent = fileName;
+        // Hide previous results/loading state on new file selection
+        document.getElementById('results_panel').style.display = 'none';
+        document.getElementById('loading_state').style.display = 'none';
+        document.getElementById('custom_flash_messages').innerHTML = '';
+    });
+
+    document.getElementById('predictionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+        const submitBtn = document.getElementById('submit_btn');
+        const loadingState = document.getElementById('loading_state');
+        const progressBar = document.getElementById('progress_bar');
+        const resultsPanel = document.getElementById('results_panel');
+        const flashDiv = document.getElementById('custom_flash_messages');
+
+        // Reset state
+        resultsPanel.style.display = 'none';
+        flashDiv.innerHTML = '';
+        progressBar.style.width = '0%';
+        
+        // Disable button and show loading state
+        submitBtn.disabled = true;
+        document.getElementById('submit_text').textContent = 'Analyzing...';
+        loadingState.style.display = 'block';
+
+        // Simulate progress bar filling up over 4 seconds
+        setTimeout(() => progressBar.style.width = '100%', 100);
+
+        // --- AJAX Submission using Fetch API ---
+        fetch('/predict', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            // Crucial step: Check if the response is valid JSON (status 200-500)
+            if (response.ok || !response.ok) {
+                return response.json();
+            }
+            // If the response is not even JSON (e.g., login redirect), the .json() call below will fail
+            // and the error is caught, which is why the JSON error occurs!
+            throw new Error('Server returned non-JSON response.');
+        })
+        .then(data => {
+            // Hide loading state
+            loadingState.style.display = 'none';
+
+            if (data.success) {
+                // SUCCESS: Update results panel
+                document.getElementById('result_filename').textContent = formData.get('video_file').name;
+                document.getElementById('result_prediction').textContent = data.prediction;
+                document.getElementById('result_confidence').textContent = `${data.confidence}%`;
+                
+                const confidenceBar = document.getElementById('confidence_bar');
+                
+                // Determine width and color based on prediction
+                let width, color, textClass;
+                if (data.prediction === 'FAKE') {
+                    width = data.fake_prob;
+                    color = 'var(--neon-pink)';
+                    textClass = 'fake';
+                } else {
+                    width = data.real_prob;
+                    color = 'var(--neon-blue)';
+                    textClass = 'real';
+                }
+                
+                // Apply styles
+                confidenceBar.style.width = `${width}%`;
+                confidenceBar.style.backgroundColor = color;
+                document.getElementById('result_prediction').className = `prediction-text ${textClass}`;
+
+                resultsPanel.style.display = 'block';
+            } else {
+                // SERVER ERROR (handled by Flask and returned as JSON)
+                showFlash(data.error, data.category || 'neon-pink');
+            }
+        })
+        .catch(error => {
+            // NETWORK/FATAL ERROR or non-JSON response (e.g. login redirect or 500 HTML page)
+            loadingState.style.display = 'none';
+            console.error('Fetch Error:', error);
+            showFlash('A critical connection error occurred. Check server logs or ensure you are logged in.', 'neon-pink');
+        })
+        .finally(() => {
+            // Re-enable button
+            submitBtn.disabled = false;
+            document.getElementById('submit_text').textContent = 'START ANALYSIS';
+        });
+    });
+</script>
+{% endblock %}
