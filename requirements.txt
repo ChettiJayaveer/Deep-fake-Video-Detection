@@ -1,0 +1,14 @@
+# Core Web Framework and Authentication
+Flask==2.3.3
+Flask-Login==0.6.3      # For session management
+Werkzeug==2.3.7          # Includes secure password hashing
+SQLAlchemy==2.0.22      # ORM for database interactions
+Flask-SQLAlchemy==3.1.1 # Integration layer for Flask and SQLAlchemy
+
+# Deepfake Model Dependencies (based on your notebook analysis)
+torch==2.0.1
+torchvision==0.15.2
+numpy==1.25.2
+tqdm==4.66.1
+opencv-python-headless==4.8.0.74 # Essential for video processing on a server (no GUI needed)
+mediapipe==0.10.14
